@@ -1,6 +1,5 @@
 import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
-import Database from 'better-sqlite3';
 
 function getDatabase() {
   const dbUrl = process.env.DATABASE_URL;
@@ -10,7 +9,22 @@ function getDatabase() {
       ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
     });
   }
-  return new Database('bazardor.db');
+
+  // When running locally in standard Node.js
+  if (!process.env.VERCEL) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const Database = require('better-sqlite3');
+      return new Database('bazardor.db');
+    } catch (e) {
+      console.warn('better-sqlite3 could not be loaded:', e);
+    }
+  }
+
+  // Fallback Pool for serverless environments when DATABASE_URL is not yet configured
+  return new Pool({
+    connectionString: dbUrl || 'postgresql://placeholder:placeholder@localhost:5432/bazardor',
+  });
 }
 
 export const auth = betterAuth({

@@ -12,7 +12,7 @@ import {
   getProductEmoji,
   toBengaliDigits,
 } from '@/lib/utils/bengali';
-import { ArrowLeft, Store, MapPin, TrendingUp, TrendingDown, ShieldAlert } from 'lucide-react';
+import { ArrowLeft, Store, MapPin } from 'lucide-react';
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
@@ -37,11 +37,17 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 export default async function ProductDetailPage({ params }: ProductPageProps) {
   const { slug } = await params;
 
-  // 1. Check Authentication on Server
-  const headersList = await headers();
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
+  // 1. Check Authentication on Server safely
+  let session = null;
+  try {
+    const headersList = await headers();
+    session = await auth.api.getSession({
+      headers: headersList,
+    });
+  } catch (err) {
+    console.warn('Session verification fallback to unauthenticated state:', err);
+    session = null;
+  }
 
   if (!session) {
     redirect(`/signin?redirect=${encodeURIComponent(`/product/${slug}`)}&auth_required=1`);
