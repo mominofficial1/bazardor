@@ -138,4 +138,4 @@ npm start
 ## 🔗 লাইভ লিংক ও সাবমিশন (Submission Links)
 
 - **GitHub Repository Link:** [https://github.com/mominofficial1/bazardor](https://github.com/mominofficial1/bazardor)
-- **Live Vercel Link:** [https://bazardor-alpha.vercel.app](https://bazardor-alpha.vercel.app) *(or deployed URL)*
+- **Live Vercel Link:** [https://bazardor-lime.vercel.app](https://bazardor-lime.vercel.app)
